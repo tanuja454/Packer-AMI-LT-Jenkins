@@ -34,8 +34,9 @@ build {
   sources = ["source.amazon-ebs.ubuntu-node"]
 
   provisioner "file" {
-    source      = "app/"
-    destination = "/tmp/node-app/"  # ✅ Important fix
+    # Copy the entire app directory as /tmp/node-app on remote
+    source      = "app"
+    destination = "/tmp/node-app"
   }
 
   provisioner "file" {
@@ -44,6 +45,9 @@ build {
   }
 
   provisioner "shell" {
-    inline = ["chmod +x /tmp/install.sh", "/tmp/install.sh"]
+    inline = [
+      "chmod +x /tmp/install.sh",
+      "sudo /tmp/install.sh"
+    ]
   }
 }
