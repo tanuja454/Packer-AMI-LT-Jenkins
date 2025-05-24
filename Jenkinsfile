@@ -12,6 +12,12 @@ pipeline {
                 checkout scm
             }
         }
+          stage('Packer Init') {
+            steps {
+                sh 'packer init .'
+            }
+        }
+
 
         stage('Build AMI with Packer') {
             steps {
