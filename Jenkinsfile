@@ -4,7 +4,6 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-1'
         LAUNCH_TEMPLATE_ID = 'lt-05ce0127e76f07ca5'
-       
     }
 
     stages {
@@ -16,11 +15,11 @@ pipeline {
 
         stage('Build AMI with Packer') {
             steps {
+                // Save output to packer.log
                 sh '''
                    packer validate packer.pkr.hcl
-                   packer build packer.pkr.hcl
-                 '''
-
+                   packer build packer.pkr.hcl | tee packer.log
+                '''
             }
         }
 
@@ -41,9 +40,17 @@ pipeline {
 
         stage('Update Launch Template') {
             steps {
-                sh '''
-                    aws ec2 create-launch-template-version                         --launch-template-id ${LAUNCH_TEMPLATE_ID}                         --version-description "Updated with AMI ${NEW_AMI_ID}"                         --source-version 1                         --launch-template-data '{"ImageId":"${NEW_AMI_ID}"}'                         --region ${AWS_REGION}
-                '''
+                script {
+                    // Use double quotes so Groovy variables are substituted before running shell
+                    sh """
+                    aws ec2 create-launch-template-version \\
+                        --launch-template-id ${LAUNCH_TEMPLATE_ID} \\
+                        --version-description "Updated with AMI ${NEW_AMI_ID}" \\
+                        --source-version 1 \\
+                        --launch-template-data '{"ImageId":"${NEW_AMI_ID}"}' \\
+                        --region ${AWS_REGION}
+                    """
+                }
             }
         }
     }
