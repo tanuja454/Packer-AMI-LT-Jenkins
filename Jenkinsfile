@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-1'
         LAUNCH_TEMPLATE_ID = 'lt-05ce0127e76f07ca5'
-        PACKER_PATH = '/usr/local/bin/packer'
+       
     }
 
     stages {
@@ -17,9 +17,10 @@ pipeline {
         stage('Build AMI with Packer') {
             steps {
                 sh '''
-                    ${PACKER_PATH} validate packer.pkr.hcl
-                    ${PACKER_PATH} build -force packer.pkr.hcl > packer.log
-                '''
+                   packer validate packer.pkr.hcl
+                   packer build packer.pkr.hcl
+                 '''
+
             }
         }
 
