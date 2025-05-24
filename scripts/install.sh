@@ -1,25 +1,30 @@
 #!/bin/bash
 set -e
 
-echo "Installing pre-requisites"
+echo "$(date) - Installing pre-requisites"
 
-# Setup Node.js
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo bash -
-sudo apt-get update
-sudo apt-get install -y nodejs build-essential
+# Run as root (sudo) - to avoid permission denied errors
+sudo apt-get update -y
+sudo apt-get install -y curl build-essential
 
-# Install PM2 globally
+# Install Node.js 18.x and npm
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Install pm2 globally
 sudo npm install -g pm2
 
-# Copy application files
-sudo mkdir -p /opt/node-app
+# Copy application files (already copied by Packer to /tmp/node-app)
+mkdir -p /opt/node-app
 sudo cp -r /tmp/node-app/. /opt/node-app/
-sudo chown -R ubuntu:ubuntu /opt/node-app
 
-# Install dependencies and run with PM2
+# Install node app dependencies (production only)
 cd /opt/node-app
-npm install --production
+sudo npm install --production
 
-pm2 start ecosystem.config.js
-pm2 startup systemd -u ubuntu --hp /home/ubuntu
-pm2 save
+# Start the app with PM2 and enable PM2 to startup on boot for ubuntu user
+sudo pm2 start ecosystem.config.js
+sudo pm2 startup systemd -u ubuntu --hp /home/ubuntu
+sudo pm2 save
+
+echo "$(date) - Application setup complete"
