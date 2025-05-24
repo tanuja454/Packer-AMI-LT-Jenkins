@@ -1,40 +1,31 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "Checking current apt sources:"
-cat /etc/apt/sources.list || true
+echo "Cleaning broken apt lists and command-not-found database..."
+sudo rm -rf /var/lib/apt/lists/*
+sudo mkdir -p /var/lib/command-not-found
+sudo touch /var/lib/command-not-found/db
+sudo apt-get clean
 
 echo "Updating apt cache..."
 sudo apt-get update -y
 
-echo "Upgrading packages..."
-sudo apt-get upgrade -y
-
-echo "Installing curl and build-essential..."
-sudo apt-get install -y curl build-essential
-
-echo "Setting up Node.js 18.x repository..."
+echo "Installing Node.js 18.x, npm, and PM2..."
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-
-echo "Installing Node.js and npm..."
-sudo apt-get install -y nodejs
+sudo apt-get install -y nodejs build-essential
 
 echo "Installing PM2 globally..."
 sudo npm install -g pm2
 
-echo "Copying app files to /opt/node-app..."
+echo "Copying application files..."
 sudo mkdir -p /opt/node-app
-sudo cp -r /tmp/node-app/. /opt/node-app
+sudo cp -r /tmp/node-app/. /opt/node-app/
 
 echo "Installing app dependencies..."
 cd /opt/node-app
 sudo npm install --production
 
-echo "Starting app with PM2..."
+echo "Starting app with PM2 and enabling startup..."
 sudo pm2 start ecosystem.config.js
-
-echo "Configuring PM2 startup on boot..."
 sudo pm2 startup systemd -u ubuntu --hp /home/ubuntu
 sudo pm2 save
-
-echo "Installation and setup complete."
