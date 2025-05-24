@@ -35,7 +35,7 @@ build {
 
   provisioner "file" {
     source      = "app/"
-    destination = "/tmp/node-app"
+    destination = "/tmp/node-app/"  # ✅ Important fix
   }
 
   provisioner "file" {
