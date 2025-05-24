@@ -1,35 +1,40 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-echo "$(date) - Installing pre-requisites"
+echo "Checking current apt sources:"
+cat /etc/apt/sources.list || true
 
-# Update the package list
+echo "Updating apt cache..."
 sudo apt-get update -y
 
-# Upgrade existing packages (optional but recommended)
+echo "Upgrading packages..."
 sudo apt-get upgrade -y
 
-# Install curl and build-essential (build-essential usually exists in ubuntu)
+echo "Installing curl and build-essential..."
 sudo apt-get install -y curl build-essential
 
-# Install Node.js 18.x and npm
+echo "Setting up Node.js 18.x repository..."
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+
+echo "Installing Node.js and npm..."
 sudo apt-get install -y nodejs
 
-# Install pm2 globally
+echo "Installing PM2 globally..."
 sudo npm install -g pm2
 
-# Copy application files (already copied by Packer to /tmp/node-app)
-mkdir -p /opt/node-app
-sudo cp -r /tmp/node-app/. /opt/node-app/
+echo "Copying app files to /opt/node-app..."
+sudo mkdir -p /opt/node-app
+sudo cp -r /tmp/node-app/. /opt/node-app
 
-# Install node app dependencies (production only)
+echo "Installing app dependencies..."
 cd /opt/node-app
 sudo npm install --production
 
-# Start the app with PM2 and enable PM2 to startup on boot for ubuntu user
+echo "Starting app with PM2..."
 sudo pm2 start ecosystem.config.js
+
+echo "Configuring PM2 startup on boot..."
 sudo pm2 startup systemd -u ubuntu --hp /home/ubuntu
 sudo pm2 save
 
-echo "$(date) - Application setup complete"
+echo "Installation and setup complete."
