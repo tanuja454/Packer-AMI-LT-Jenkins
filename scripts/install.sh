@@ -3,8 +3,13 @@ set -e
 
 echo "$(date) - Installing pre-requisites"
 
-# Run as root (sudo) - to avoid permission denied errors
+# Update the package list
 sudo apt-get update -y
+
+# Upgrade existing packages (optional but recommended)
+sudo apt-get upgrade -y
+
+# Install curl and build-essential (build-essential usually exists in ubuntu)
 sudo apt-get install -y curl build-essential
 
 # Install Node.js 18.x and npm
