@@ -2,15 +2,18 @@
 set -e
 
 # Update & install Node.js 18.x, npm, and PM2
-curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-apt-get update
-apt-get install -y nodejs build-essential
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get update
+sudo apt-get install -y nodejs build-essential
 
-npm install -g pm2
+sudo npm install -g pm2
 
 # Copy application files
-mkdir -p /opt/node-app
-cp -r /tmp/node-app/* /opt/node-app/
+sudo mkdir -p /opt/node-app
+sudo cp -r /tmp/node-app/* /opt/node-app/
+
+# Set correct ownership
+sudo chown -R ubuntu:ubuntu /opt/node-app
 
 # Install app dependencies
 cd /opt/node-app
