@@ -14,7 +14,7 @@ variable "aws_region" {
 
 source "amazon-ebs" "ubuntu-node" {
   region           = var.aws_region
-  instance_type    = "t2.medium"
+  instance_type    = "t2.micro"
   ami_name         = "node-app-ami-{{timestamp}}"
   ssh_username     = "ubuntu"
 
@@ -24,7 +24,7 @@ source "amazon-ebs" "ubuntu-node" {
       root-device-type    = "ebs"
       virtualization-type = "hvm"
     }
-    owners      = ["099720109477"]
+    owners      = ["624338972180"]
     most_recent = true
   }
 }
