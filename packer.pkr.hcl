@@ -20,11 +20,11 @@ source "amazon-ebs" "ubuntu-node" {
 
   source_ami_filter {
     filters = {
-      name                = "Ubuntu Server 24.04 LTS (HVM), SSD Volume Type-*"
+      name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
       root-device-type    = "ebs"
       virtualization-type = "hvm"
     }
-    owners      = ["624338972180"]
+    owners      = ["099720109477"]
     most_recent = true
   }
 }
