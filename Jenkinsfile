@@ -4,6 +4,7 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-1'
         LAUNCH_TEMPLATE_ID = 'lt-07b5a5307a5c10997'
+        NAME = "ASG"
     }
 
     stages {
