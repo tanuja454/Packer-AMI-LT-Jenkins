@@ -20,7 +20,7 @@ source "amazon-ebs" "ubuntu-node" {
 
   source_ami_filter {
     filters = {
-      name                = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"
+      name                = "Ubuntu Server 24.04 LTS (HVM), SSD Volume Type-*"
       root-device-type    = "ebs"
       virtualization-type = "hvm"
     }
